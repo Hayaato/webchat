@@ -1,23 +1,38 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Minimal Chat</title>
+    <meta charset="utf-8">
+    <title>Mini Chat</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="auth" id="auth">
-    <h2>Вход</h2>
-    <input type="text" id="username" placeholder="Имя пользователя">
-    <button id="loginBtn">Войти</button>
+
+<!-- MODAL AUTH -->
+<div id="auth-modal" class="modal">
+    <div class="modal-box">
+        <h2 id="auth-title">Login</h2>
+
+        <input id="email" placeholder="Email" autocomplete="off">
+        <input id="password" placeholder="Password" type="password">
+
+        <button id="auth-btn">Login</button>
+
+        <span id="switch-auth" class="small-link">Create account</span>
+    </div>
 </div>
 
-<div class="chat hidden" id="chat">
-    <div class="chat-header" id="chatUser"></div>
-    <div class="messages" id="messages"></div>
-    <div class="input-box">
-        <input type="text" id="messageInput" placeholder="Сообщение">
-        <button id="sendBtn">➤</button>
+<!-- CHAT BOX -->
+<div id="chat-box" class="hidden">
+    <div id="chat-header">
+        <span>Global Chat</span>
+        <button id="logout-btn">Logout</button>
+    </div>
+
+    <div id="chat-messages"></div>
+
+    <div id="chat-input">
+        <input id="msg-input" placeholder="Message">
+        <button id="msg-send">Send</button>
     </div>
 </div>
 
