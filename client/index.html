@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Minimal Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="auth" id="auth">
+    <h2>Вход</h2>
+    <input type="text" id="username" placeholder="Имя пользователя">
+    <button id="loginBtn">Войти</button>
+</div>
+
+<div class="chat hidden" id="chat">
+    <div class="chat-header" id="chatUser"></div>
+    <div class="messages" id="messages"></div>
+    <div class="input-box">
+        <input type="text" id="messageInput" placeholder="Сообщение">
+        <button id="sendBtn">➤</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
