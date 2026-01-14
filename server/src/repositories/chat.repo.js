@@ -11,4 +11,9 @@ async function addMessage(user, text) {
         return false;
     }
 }
-module.exports = {addMessage}
+async function getData() {
+    const messages = await redisClient.lRange('chat', 0, -1);
+    console.log(messages);
+    return messages;
+}
+module.exports = {addMessage, getData};

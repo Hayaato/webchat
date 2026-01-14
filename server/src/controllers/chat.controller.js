@@ -13,5 +13,14 @@ async function message(req, res){
     }
 
 }
-
-module.exports = {message};
+async function getData(req, res){
+    try {
+        const messages = await service.getData(req.user);
+        res.json(messages);
+    }
+    catch (e) {
+        console.error("CONTROLLER ERROR:", e);
+        res.status(400).json({ error: e.message });
+    }
+}
+module.exports = {message, getData};

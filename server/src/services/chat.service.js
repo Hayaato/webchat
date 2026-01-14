@@ -7,7 +7,11 @@ async function message(user, text) {
     if (!ok) throw new Error("Could not add a message");
     return messageObj;
 }
-function randomHexColor() {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+async function getData(user) {
+    const messages = await repo.getData();
+    return messages.map(msg => JSON.parse(msg));
 }
-module.exports = {message};
+//function randomHexColor() {
+//    return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+//}
+module.exports = {message, getData};

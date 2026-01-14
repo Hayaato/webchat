@@ -6,11 +6,22 @@ if (!token) { window.location.href = "index.html"; }
 let messages = [];
 
 socket.addEventListener("open", () => {
-    console.log("WebSocket подключен");
+    socket.send(JSON.stringify({
+        type: "get_messages",
+        token: token
+    }));
+
 });
 
 socket.addEventListener("message", (event) => {
     const msg = JSON.parse(event.data);
+    console.log(msg);
+    if (msg.type === "get_messages") {
+        messages = msg.data;
+
+        renderMessages(messages);
+        return;
+    }
     messages.push(msg);
     renderMessages(messages);
 });
