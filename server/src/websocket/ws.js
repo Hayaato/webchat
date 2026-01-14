@@ -16,12 +16,10 @@ function init(server) {
                     {headers: { Authorization: `Bearer ${data.token}`}}
                 );
 
-                const payload = JSON.stringify(response.data);
+                const message = JSON.stringify(response.data);
 
                 wss.clients.forEach(client => {
-                    if (client.readyState === WebSocket.OPEN) {
-                        client.send(payload);
-                    }
+                        client.send(message);
                 });
 
             } catch (err) {
