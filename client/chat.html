@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <span>Мини-чат</span>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div id="messages" class="chat-messages"></div>
+
+    <div class="chat-input">
+        <input
+                id="messageInput"
+                placeholder="Сообщение..."
+                onkeydown="if(event.key === 'Enter') sendMessage()"
+        >
+        <button onclick="sendMessage()">Отправить</button>
+    </div>
+</div>
+
+<script src="js/chat.js"></script>
+</body>
+</html>
