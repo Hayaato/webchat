@@ -1,6 +1,8 @@
 const repo = require('../repositories/auth.repo');
+const chatRepo = require("../repositories/chat.repo");
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
+const color = require('../utils/color');
 const JWT_SECRET = process.env.JWT_SECRET
 
 async function login(login, password) {
@@ -10,6 +12,7 @@ async function login(login, password) {
     const user = result.rows[0];
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) throw new Error();
+    await chatRepo.saveColor(user.login, color.randomHexColor())
     return jwt.sign(
         { login: user.login},
         JWT_SECRET,

@@ -1,10 +1,28 @@
 const redisClient = require("../database/redis");
 
-async function addMessage(user, text) {
-    try {
-        const message = {user: user, text: text};
+async function saveColor(user, color){
+    try{
+        await redisClient.hSet(`room:color`, user, color);
+    }
+    catch(err){
+        throw err;
+    }
+}
 
-        await redisClient.rPush("chat", JSON.stringify(message));
+async function getColor(user){
+    try {
+        return await redisClient.hGet(`room:color`, user);
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+async function addMessage(user, text, color) {
+    try {
+        const message = {user: user, text: text, color: color};
+
+        await redisClient.rPush("room:chat", JSON.stringify(message));
         return true;
     }
     catch{
@@ -12,8 +30,8 @@ async function addMessage(user, text) {
     }
 }
 async function getData() {
-    const messages = await redisClient.lRange('chat', 0, -1);
+    const messages = await redisClient.lRange('room:chat', 0, -1);
     console.log(messages);
     return messages;
 }
-module.exports = {addMessage, getData};
+module.exports = {addMessage, getData, getColor, saveColor};

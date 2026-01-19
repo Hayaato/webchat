@@ -41,7 +41,8 @@ function init(server) {
                             client.send(JSON.stringify({
                                 type: "message",
                                 user: response.data.user,
-                                text: response.data.text
+                                text: response.data.text,
+                                color: response.data.color
                             }));
                         });
                     } catch (err) {

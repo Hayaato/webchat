@@ -5,7 +5,7 @@ async function message(req, res){
         const user = req.user
         const text = req.body.text;
         const result = await service.message(user, text);
-        res.json({user: result.user, text: result.text});
+        res.json({user: result.user, text: result.text, color: result.color});
     }
     catch (e) {
         console.error("CONTROLLER ERROR:", e);

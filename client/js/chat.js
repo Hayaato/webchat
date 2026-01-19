@@ -32,7 +32,8 @@ function renderMessages(msgArray) {
     msgArray.forEach(msg => {
         const div = document.createElement("div");
         div.className = "message";
-        div.innerHTML = `<span>${msg.user}:</span> ${msg.text}`;
+        div.innerHTML = `<span class="user-name">${msg.user}:</span> ${msg.text}`;
+        div.querySelector(".user-name").style.color = msg.color;
         messagesBox.appendChild(div);
     });
     messagesBox.scrollTop = messagesBox.scrollHeight;
