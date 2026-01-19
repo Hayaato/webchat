@@ -30,8 +30,6 @@ async function addMessage(user, text, color) {
     }
 }
 async function getData() {
-    const messages = await redisClient.lRange('room:chat', 0, -1);
-    console.log(messages);
-    return messages;
+    return await redisClient.lRange('room:chat', 0, -1);
 }
 module.exports = {addMessage, getData, getColor, saveColor};
