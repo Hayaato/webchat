@@ -51,8 +51,6 @@ function init(server) {
                     }
                 }
         });
-
-        ws.on("close", () => console.log("Клиент отключился"));
     });
 }
 
