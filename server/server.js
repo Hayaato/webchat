@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 require("./src/config/env");
 const http = require("http");
-const ws = require("./src/websocket/ws");
+const ws = require("./src/utils/websocket/ws");
 
 const app = express();
 
