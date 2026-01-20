@@ -21,6 +21,10 @@ async function register(req, res) {
     } catch (e) {
         res.sendStatus(400);
     }
-
 }
-module.exports = {login, register};
+
+function user(req, res) {
+    res.json(req.user)
+}
+
+module.exports = {login, register, user};

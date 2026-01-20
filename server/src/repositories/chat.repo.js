@@ -2,6 +2,7 @@ const redisClient = require("../database/redis");
 
 async function saveColor(user, color){
     try{
+        if(await getColor(user).length[0] )
         await redisClient.hSet(`room:color`, user, color);
     }
     catch(err){

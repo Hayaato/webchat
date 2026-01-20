@@ -1,9 +1,19 @@
 const messagesBox = document.getElementById("messages");
 const socket = new WebSocket("ws://localhost:3000");
 const token = sessionStorage.getItem("token");
+const span = document.getElementById("chat-title");
 if (!token) { window.location.href = "index.html"; }
-
+getUser(token)
 let messages = [];
+
+async function getUser(token){
+    const result = await fetch("/auth/user", {
+        method: "GET",
+        headers: { "Authorization": "Bearer " + token }
+    })
+    const data = await result.json();
+    span.textContent = `Мини-чат — Пользователь: ${data}`;
+}
 
 socket.addEventListener("open", () => {
     socket.send(JSON.stringify({
@@ -49,7 +59,8 @@ function sendMessage() {
     input.value = "";
 }
 
-// Логаут
+
 function logout() {
+    sessionStorage.removeItem("token");
     window.location.href = "index.html";
 }
