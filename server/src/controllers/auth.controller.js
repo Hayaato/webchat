@@ -4,7 +4,7 @@ async function login(req, res) {
     try {
         const token = await service.login(req.body.login, req.body.password);
         res.status(200).json({ token: token });
-    } catch {
+    } catch(err) {
         res.sendStatus(400);
     }
 }

@@ -13,7 +13,9 @@ async function login(login, password) {
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) throw new Error();
     const userColor = await chatRepo.getColor(user.login)
-    if (!userColor){await chatRepo.saveColor(user.login, color.randomHexColor())}
+    if (!userColor){
+        await chatRepo.saveColor(user.login, color.randomHexColor())
+    }
     return jwt.sign(
         { login: user.login},
         JWT_SECRET,
