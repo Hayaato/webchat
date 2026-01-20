@@ -25,7 +25,6 @@ socket.addEventListener("open", () => {
 
 socket.addEventListener("message", (event) => {
     const msg = JSON.parse(event.data);
-    console.log(msg);
     if (msg.type === "get_messages") {
         messages = msg.data;
 
