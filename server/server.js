@@ -13,6 +13,7 @@ app.use(express.static(path.join(__dirname, "../client")));
 
 app.use("/chat", require("./src/routes/chat.routes"))
 app.use("/auth", require("./src/routes/auth.routes"));
+app.use("/admin", require("./src/routes/admin.routes"));
 
 const server = http.createServer(app);
 ws.init(server, app);
