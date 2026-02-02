@@ -10,7 +10,10 @@
 <div class="chat-container">
     <div class="chat-header">
         <span id="chat-title">Мини-чат</span>
-        <button onclick="logout()">Logout</button>
+        <div class="header-buttons">
+            <button onclick="toggleAdmin()">Admin</button>
+            <button onclick="logout()">Logout</button>
+        </div>
     </div>
 
     <div id="messages" class="chat-messages"></div>
@@ -25,6 +28,25 @@
     </div>
 </div>
 
+<div id="adminPanel" class="admin-panel hidden">
+    <div class="admin-box">
+        <h3>Админ панель</h3>
+        <button>Кнопка 1</button>
+        <button>Кнопка 2</button>
+        <button>Кнопка 3</button>
+        <button onclick="toggleAdmin()">Закрыть</button>
+    </div>
+</div>
+<div id="adminAuth" class="admin-panel hidden">
+    <div class="admin-box">
+        <h3>Пароль администратора</h3>
+        <input type="password" placeholder="Пароль">
+        <button onclick="openAdmin()">Подтвердить</button>
+        <button onclick="closeAdminAuth()">Отмена</button>
+    </div>
+</div>
+
 <script src="js/chat.js"></script>
+<script src="js/admin.js"></script>
 </body>
 </html>

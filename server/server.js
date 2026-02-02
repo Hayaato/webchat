@@ -3,9 +3,11 @@ const path = require("path");
 require("./src/config/env");
 const http = require("http");
 const ws = require("./src/utils/websocket/ws");
+const pass = require("./src/utils/adminPassGen");
 
 const app = express();
 
+console.log("Admin pass: " + pass.password(16))
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../client")));
 
