@@ -61,5 +61,7 @@ function sendMessage() {
 
 function logout() {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("admin:token");
     window.location.href = "index.html";
 }
+document.getElementById('messages').innerHTML = '';
