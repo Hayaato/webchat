@@ -7,7 +7,7 @@ const pass = require("./src/utils/adminPassGen");
 
 const app = express();
 
-console.log("Admin pass: " + pass.password(16))
+pass.password(16)
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../client")));
 

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-
-router.get('/auth')
+const ctrl = require("../controllers/admin.controller");
+router.post('/auth', ctrl.login)
 
 module.exports = router;
