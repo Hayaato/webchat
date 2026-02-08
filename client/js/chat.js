@@ -25,14 +25,19 @@ socket.addEventListener("open", () => {
 
 socket.addEventListener("message", (event) => {
     const msg = JSON.parse(event.data);
-    if (msg.type === "get_messages") {
-        messages = msg.data;
-
-        renderMessages(messages);
-        return;
+    switch (msg.type) {
+        case "get_messages":
+            messages = msg.data;
+            renderMessages(messages);
+            break;
+        case "messages":
+            messages.push(msg);
+            renderMessages(messages);
+            break;
+        case 'clear':
+            document.getElementById('messages').innerHTML = '';
+            break;
     }
-    messages.push(msg);
-    renderMessages(messages);
 });
 
 // Функция для отображения сообщений
@@ -64,4 +69,4 @@ function logout() {
     sessionStorage.removeItem("admin:token");
     window.location.href = "index.html";
 }
-document.getElementById('messages').innerHTML = '';
+
