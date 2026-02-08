@@ -30,11 +30,12 @@ socket.addEventListener("message", (event) => {
             messages = msg.data;
             renderMessages(messages);
             break;
-        case "messages":
+        case "message":
             messages.push(msg);
             renderMessages(messages);
             break;
         case 'clear':
+            messages = [];
             document.getElementById('messages').innerHTML = '';
             break;
     }

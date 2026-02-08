@@ -1,7 +1,9 @@
 repo = require("../repositories/admin.repo")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
+const path = require('path');
 const JWT_SECRET = process.env.JWT_SECRET;
+const { broadcast } = require("../utils/websocket/ws");
 
 async function setAdminHash(password) {
     try{
@@ -27,4 +29,13 @@ async function getAdminHash(password) {
         throw e;
     }
 }
-module.exports = {setAdminHash, getAdminHash};
+async function clearChat(){
+    try{
+        await repo.clearRedisChat()
+        broadcast({ type: "clear" });
+    }
+    catch(e){
+        throw e;
+    }
+}
+module.exports = {setAdminHash, getAdminHash, clearChat};

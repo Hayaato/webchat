@@ -27,4 +27,14 @@ async function auth(req, res) {
         res.sendStatus(500);
     }
 }
-module.exports = {setAdminPassword, login, auth};
+async function clear(req, res) {
+    try {
+        await service.clearChat()
+        res.sendStatus(200);
+    }
+    catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+module.exports = {setAdminPassword, login, auth, clear};

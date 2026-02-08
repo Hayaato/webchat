@@ -25,4 +25,4 @@ async function clearRedisChat(){
         return err
     }
 }
-module.exports = {saveHashPassword, getHashPass}
+module.exports = {saveHashPassword, getHashPass, clearRedisChat}

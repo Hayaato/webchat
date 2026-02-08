@@ -6,8 +6,8 @@ const ws = require("./src/utils/websocket/ws");
 const pass = require("./src/utils/adminPassGen");
 
 const app = express();
+pass.password(16);
 
-pass.password(16)
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../client")));
 
@@ -16,7 +16,7 @@ app.use("/auth", require("./src/routes/auth.routes"));
 app.use("/admin", require("./src/routes/admin.routes"));
 
 const server = http.createServer(app);
-ws.init(server, app);
+ws.init(server);
 
 server.listen(3000, () => {
     console.log("http://localhost:3000");

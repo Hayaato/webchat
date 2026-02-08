@@ -48,3 +48,12 @@ async function openAdmin() {
         document.getElementById('adminPanel').classList.remove('hidden');
     }
 }
+
+async function clearChat(){
+    const token = sessionStorage.getItem('admin:token');
+    await fetch("/admin/clear", {
+        method: "PUT",
+        cache: "no-store",
+        headers: { Authorization: "Bearer " + token},
+    })
+}
