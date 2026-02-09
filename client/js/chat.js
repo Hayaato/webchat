@@ -1,8 +1,9 @@
 const messagesBox = document.getElementById("messages");
 const socket = new WebSocket("ws://localhost:3000");
-const token = sessionStorage.getItem("token");
+let token = sessionStorage.getItem("token");
+const refresh_token = sessionStorage.getItem("refresh_token");
 const span = document.getElementById("chat-title");
-if (!token) { window.location.href = "index.html"; }
+if (!token && !refresh_token) { window.location.href = "index.html"; }
 getUser(token)
 let messages = [];
 
@@ -11,8 +12,18 @@ async function getUser(token){
         method: "GET",
         headers: { "Authorization": "Bearer " + token }
     })
-    const data = await result.json();
-    span.textContent = `Мини-чат — Пользователь: ${data}`;
+    switch(result.status) {
+        case 401:
+            await refresh()
+            break;
+        case 400:
+            console.log("Error")
+            break;
+        default:
+            const data = await result.json();
+            span.textContent = `Мини-чат — Пользователь: ${data}`;
+            break;
+    }
 }
 
 socket.addEventListener("open", () => {
@@ -69,5 +80,20 @@ function logout() {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("admin:token");
     window.location.href = "index.html";
+}
+
+async function refresh(){
+    const response = await fetch('/auth/refresh', {
+        method: "GET",
+        headers: { "Authorization": "Bearer " + refresh_token }
+    })
+    const data = await response.json();
+    sessionStorage.setItem("token", data.token);
+    token = data.token;
+    await getUser(token);
+    socket.send(JSON.stringify({
+        type: "get_messages",
+        token: token
+    }));
 }
 

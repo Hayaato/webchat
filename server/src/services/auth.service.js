@@ -16,11 +16,18 @@ async function login(login, password) {
     if (!userColor){
         await chatRepo.saveColor(user.login, color.randomHexColor())
     }
-    return jwt.sign(
+    return {token: jwt.sign(
         { login: user.login},
         JWT_SECRET,
-        { expiresIn: "7d" }
-    );
+        { expiresIn: "1d" }
+    ),
+        refresh_token:jwt.sign(
+            {refresh: user.login,
+            type: "refresh"},
+            JWT_SECRET,
+            { expiresIn: "7d" }
+        )
+    };
 }
 async function register(login, password) {
     const result = await repo.findByLogin(login);
@@ -31,5 +38,17 @@ async function register(login, password) {
     await repo.createUser(login, hash);
     return true;
 }
+async function refresh_service(refreshToken) {
+    const decoded = jwt.verify(refreshToken, JWT_SECRET);
 
-module.exports = {login, register};
+    if (decoded.type !== "refresh") {
+        throw new Error("Refresh token is not valid");
+    }
+    return jwt.sign(
+        {login: decoded.refresh},
+        JWT_SECRET,
+        {expiresIn: "1d"}
+    )
+}
+
+module.exports = {login, register, refresh_service};

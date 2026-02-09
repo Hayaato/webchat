@@ -47,6 +47,7 @@ async function login() {
         case 200:
             const data = await result.json();
             sessionStorage.setItem("token", data.token);
+            sessionStorage.setItem("refresh_token", data.refresh_token);
             window.location.href = "chat.html";
             break;
         case 400:

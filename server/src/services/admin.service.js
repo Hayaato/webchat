@@ -1,7 +1,6 @@
 repo = require("../repositories/admin.repo")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
-const path = require('path');
 const JWT_SECRET = process.env.JWT_SECRET;
 const { broadcast } = require("../utils/websocket/ws");
 
@@ -38,4 +37,5 @@ async function clearChat(){
         throw e;
     }
 }
+
 module.exports = {setAdminHash, getAdminHash, clearChat};
