@@ -5,7 +5,6 @@ async function login(req, res) {
         const token = await service.login(req.body.login, req.body.password);
         res.status(200).json({ token: token.token ,refresh_token: token.refresh_token });
     } catch(err) {
-        console.log(err);
         res.sendStatus(400);
     }
 }
