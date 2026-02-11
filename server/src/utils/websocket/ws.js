@@ -73,7 +73,6 @@ function init(server) {
         ws.on("close", () => {
             if (user) {
                 clients.delete(user);
-                console.log(`[WS] User ${user} disconnected and removed from clients`);
             }
         });
     });
