@@ -31,7 +31,6 @@ socket.addEventListener("open", () => {
         type: "get_messages",
         token: token
     }));
-
 });
 
 socket.addEventListener("message", (event) => {
@@ -48,6 +47,9 @@ socket.addEventListener("message", (event) => {
         case 'clear':
             messages = [];
             document.getElementById('messages').innerHTML = '';
+            break;
+        case 'disconnect':
+            logout();
             break;
     }
 });
@@ -78,6 +80,7 @@ function sendMessage() {
 
 function logout() {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("refresh_token");
     sessionStorage.removeItem("admin:token");
     window.location.href = "index.html";
 }

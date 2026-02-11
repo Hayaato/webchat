@@ -37,4 +37,14 @@ async function clear(req, res) {
         res.sendStatus(500);
     }
 }
-module.exports = {setAdminPassword, login, auth, clear};
+async function kick(req, res) {
+    try{
+        const user = decodeURIComponent(req.params.user);
+        if(await service.kick_user(user)){res.sendStatus(200);}
+        else{res.sendStatus(400);}
+    }
+    catch (error) {
+        res.sendStatus(500);
+    }
+}
+module.exports = {setAdminPassword, login, auth, clear, kick};

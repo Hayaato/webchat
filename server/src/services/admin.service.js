@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 const { broadcast } = require("../utils/websocket/ws");
-
+const { disconnectUser } = require("../utils/websocket/ws");
 async function setAdminHash(password) {
     try{
         const hash = await bcrypt.hash(password, 12);
@@ -37,5 +37,13 @@ async function clearChat(){
         throw e;
     }
 }
+async function kick_user(user){
+    try{
+        return disconnectUser(user);
+    }
+    catch(e){
+        throw e;
+    }
+}
 
-module.exports = {setAdminHash, getAdminHash, clearChat};
+module.exports = {setAdminHash, getAdminHash, clearChat, kick_user};

@@ -48,11 +48,33 @@ async function openAdmin() {
         document.getElementById('adminPanel').classList.remove('hidden');
     }
 }
-
+async function kick_user(){
+    const token = sessionStorage.getItem('admin:token');
+    const user = document.getElementById('inputField').value.trim();
+    if (!user) return;
+    const res = await fetch(`/admin/kick/${encodeURIComponent(user)}`, {
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + token },
+    })
+    switch (res.status){
+        case 200:
+            alert("Пользователь успешно кикнут!")
+            break;
+        case 401:
+            alert("Вы не авторизированы!")
+            break;
+        case 400:
+            alert("Введите корректного пользователя!")
+            break;
+        default:
+            alert("Неизвестаня ошибка!")
+            break;
+    }
+}
 async function clearChat(){
     const token = sessionStorage.getItem('admin:token');
     await fetch("/admin/clear", {
-        method: "PUT",
+        method: "DELETE",
         cache: "no-store",
         headers: { Authorization: "Bearer " + token},
     })

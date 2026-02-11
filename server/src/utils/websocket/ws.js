@@ -1,7 +1,9 @@
 const WebSocket = require("ws");
 const axios = require("axios");
-
+const jwt = require("jsonwebtoken");
+const SECRET = process.env.JWT_SECRET;
 let wss;
+const clients = new Map();
 
 function init(server) {
     if (wss) return wss;
@@ -9,17 +11,31 @@ function init(server) {
     wss = new WebSocket.Server({ server });
 
     wss.on("connection", ws => {
+        let user = null;
+
         ws.on("message", async raw => {
             const msg = JSON.parse(raw.toString());
             if (msg.type === "get_messages") {
                 try {
                     const token = msg.token;
+                    if (!token) return ws.close();
+
+                    const cleanToken = token.replace('Bearer ', '');
+                    const decoded = jwt.verify(cleanToken, SECRET);
+                    user = decoded.login;
+
+                    if(clients.has(user)) {
+                        ws.close(4000, 'Already connected');
+                        return;
+                    }
+
                     const response = await axios.post(
                         "http://localhost:3000/chat/getData",
                         {},
-                        { headers: { Authorization: `Bearer ${token}` } }
+                        { headers: { Authorization: `Bearer ${cleanToken}` } }
                     );
 
+                    clients.set(user, ws);
                     ws.send(JSON.stringify({
                         type: "get_messages",
                         data: response.data
@@ -53,6 +69,13 @@ function init(server) {
                 }
             }
         });
+
+        ws.on("close", () => {
+            if (user) {
+                clients.delete(user);
+                console.log(`[WS] User ${user} disconnected and removed from clients`);
+            }
+        });
     });
 
     return wss;
@@ -68,4 +91,24 @@ function broadcast(payload) {
     });
 }
 
-module.exports = { init, broadcast };
+function disconnectUser(user) {
+    const ws = clients.get(user);
+    if (ws) {
+        if(sendToUser(user,{type: "disconnect"})) {
+            ws.close(4000, "Disconnected by administrator");
+            clients.delete(user);
+            return true;
+        }
+    }
+    return false;
+}
+function sendToUser(user, payload) {
+    const ws = clients.get(user);
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(payload));
+        return true;
+    }
+    return false;
+}
+
+module.exports = { init, broadcast, disconnectUser };
