@@ -51,7 +51,10 @@ async function openAdmin() {
 async function kick_user(){
     const token = sessionStorage.getItem('admin:token');
     const user = document.getElementById('inputField').value.trim();
-    if (!user) return;
+    if (!user) {
+        alert('Введите пользователя!')
+        return
+    }
     const res = await fetch(`/admin/kick/${encodeURIComponent(user)}`, {
         method: "DELETE",
         headers: { Authorization: "Bearer " + token },
@@ -73,9 +76,20 @@ async function kick_user(){
 }
 async function clearChat(){
     const token = sessionStorage.getItem('admin:token');
-    await fetch("/admin/clear", {
+    const res = await fetch("/admin/clear", {
         method: "DELETE",
         cache: "no-store",
         headers: { Authorization: "Bearer " + token},
     })
+    switch (res.status){
+        case 200:
+            alert("Чат очищен")
+            break;
+        case 401:
+            alert("Вы не авторизированы!")
+            break;
+        default:
+            alert("Неизвестаня ошибка!")
+            break;
+    }
 }
