@@ -100,8 +100,6 @@ async function ban(){
     if (!user && !duration && !token) {
         return;
     }
-    console.log(user);
-    console.log(duration);
     const res = await fetch(`/admin/ban`, {
         method: "POST",
         headers: {
@@ -116,6 +114,12 @@ async function ban(){
             break;
         case 401:
             alert("Вы не авторизированы!")
+            break;
+        case 400:
+            alert("Бан не удался!")
+            break;
+        case 403:
+            alert("Пользователь уже забанен!")
             break;
         default:
             alert("Неизвестаня ошибка!")
