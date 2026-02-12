@@ -93,3 +93,32 @@ async function clearChat(){
             break;
     }
 }
+async function ban(){
+    const token = sessionStorage.getItem('admin:token');
+    const user = document.getElementById('inputFieldBanUser').value.trim();
+    const duration = document.getElementById('inputFieldDuration').value.trim();
+    if (!user && !duration && !token) {
+        return;
+    }
+    console.log(user);
+    console.log(duration);
+    const res = await fetch(`/admin/ban`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ user:user, duration:duration })
+    })
+    switch (res.status){
+        case 200:
+            alert("Пользоватеель успешно забанен!")
+            break;
+        case 401:
+            alert("Вы не авторизированы!")
+            break;
+        default:
+            alert("Неизвестаня ошибка!")
+            break;
+    }
+}

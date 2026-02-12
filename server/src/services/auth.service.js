@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
 const color = require('../utils/color');
 const JWT_SECRET = process.env.JWT_SECRET
+const set = require("../utils/blacklist");
 
 async function login(login, password) {
     const result = await repo.findByLogin(login);
@@ -12,6 +13,7 @@ async function login(login, password) {
     const user = result.rows[0];
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) throw new Error();
+    if(set.Blacklist.has(login)) return false;
     const userColor = await chatRepo.getColor(user.login)
     if (!userColor){
         await chatRepo.saveColor(user.login, color.randomHexColor())

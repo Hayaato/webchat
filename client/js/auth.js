@@ -53,6 +53,9 @@ async function login() {
         case 400:
             error.textContent = "Введите корректные данные!"
             break;
+        case 401:
+            error.textContent = "Вы забанены, попробуйте позже!"
+            break;
         default:
             error.textContent = "Неизвестная ошибка, попробуйте позже!"
     }

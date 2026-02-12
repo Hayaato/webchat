@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 const { broadcast } = require("../utils/websocket/ws");
 const { disconnectUser } = require("../utils/websocket/ws");
+const set = require("../utils/blacklist");
 async function setAdminHash(password) {
     try{
         const hash = await bcrypt.hash(password, 12);
@@ -45,5 +46,15 @@ async function kick_user(user){
         throw e;
     }
 }
+async function ban_user(user, duration){
+    try{
+        set.Blacklist.add(user);
+        setTimeout(() => set.Blacklist.delete(user), duration);
+        return disconnectUser(user);
+    }
+    catch(e){
+        throw e;
+    }
+}
 
-module.exports = {setAdminHash, getAdminHash, clearChat, kick_user};
+module.exports = {setAdminHash, getAdminHash, clearChat, kick_user, ban_user};

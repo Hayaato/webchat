@@ -1,4 +1,5 @@
 const service = require("../services/admin.service");
+const set = require("../utils/blacklist");
 
 async function setAdminPassword(password) {
     try {
@@ -47,4 +48,18 @@ async function kick(req, res) {
         res.sendStatus(500);
     }
 }
-module.exports = {setAdminPassword, login, auth, clear, kick};
+async function ban(req, res) {
+    try {
+        console.log(req.body)
+        const duration = Number(req.body.duration);
+        const user = req.body.user;
+        if(set.Blacklist.has(user)){res.sendStatus(403);return}
+        if(await service.ban_user(user, duration)){res.sendStatus(200);return}
+        res.sendStatus(400)
+    }
+    catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+module.exports = {setAdminPassword, login, auth, clear, kick, ban};
