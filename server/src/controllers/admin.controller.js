@@ -50,7 +50,6 @@ async function kick(req, res) {
 }
 async function ban(req, res) {
     try {
-        console.log(req.body)
         const duration = Number(req.body.duration);
         const user = req.body.user;
         if(set.Blacklist.has(user)){res.sendStatus(403);return}
@@ -58,7 +57,6 @@ async function ban(req, res) {
         res.sendStatus(400)
     }
     catch (error) {
-        console.log(error);
         res.sendStatus(500);
     }
 }
