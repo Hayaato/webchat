@@ -90,6 +90,7 @@ async function refresh(){
         method: "GET",
         headers: { "Authorization": "Bearer " + refresh_token }
     })
+    if(response.status === 401){logout();return}
     const data = await response.json();
     sessionStorage.setItem("token", data.token);
     token = data.token;

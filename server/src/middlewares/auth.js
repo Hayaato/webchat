@@ -8,7 +8,7 @@ function auth(req, res, next){
         const token = header.split(" ")[1];
         const decoded = jwt.verify(token, secret);
         req.user = decoded.login;
-        if(set.Blacklist.has(req.user))
+        if(set.Blacklist.has(req.user)) return res.sendStatus(401);
         next();
     }
     catch{

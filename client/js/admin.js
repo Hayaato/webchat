@@ -110,7 +110,7 @@ async function ban(){
     })
     switch (res.status){
         case 200:
-            alert("Пользоватеель успешно забанен!")
+            alert("Пользователь успешно забанен!")
             break;
         case 401:
             alert("Вы не авторизированы!")

@@ -39,7 +39,7 @@ async function refresh(req, res) {
         res.status(200).json({ token: newToken });
     }
     catch(err) {
-        res.sendStatus(400);
+        res.sendStatus(401);
     }
 }
 
