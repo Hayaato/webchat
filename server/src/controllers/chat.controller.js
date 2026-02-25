@@ -5,7 +5,7 @@ async function message(req, res){
         const user = req.user
         const text = req.body.text;
         const result = await service.message(user, text);
-        res.json({user: result.user, text: result.text, color: result.color});
+        res.json({user: result.user, text: result.text, color: result.color, id: result.id});
     }
     catch (e) {
         console.error("CONTROLLER ERROR:", e);
@@ -15,7 +15,7 @@ async function message(req, res){
 }
 async function getData(req, res){
     try {
-        const messages = await service.getData(req.user);
+        const messages = await service.getData();
         res.json(messages);
     }
     catch (e) {
@@ -23,4 +23,5 @@ async function getData(req, res){
         res.status(400).json({ error: e.message });
     }
 }
+
 module.exports = {message, getData};

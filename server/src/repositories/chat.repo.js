@@ -18,9 +18,9 @@ async function getColor(user){
     }
 }
 
-async function addMessage(user, text, color) {
+async function addMessage(user, text, color, id) {
     try {
-        const message = {user: user, text: text, color: color};
+        const message = {user: user, text: text, color: color, id: id};
 
         await redisClient.rPush("room:chat", JSON.stringify(message));
         return true;

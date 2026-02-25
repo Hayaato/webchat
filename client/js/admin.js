@@ -14,13 +14,11 @@ async function toggleAdmin() {
             cache: "no-store",
             headers: { Authorization: "Bearer " + token }
         });
-
         if (response.ok) {
             adminAuth.classList.add('hidden');
             adminPanel.classList.remove('hidden');
             return;
         }
-
         sessionStorage.removeItem('admin:token');
     }
 
@@ -46,6 +44,7 @@ async function openAdmin() {
         sessionStorage.setItem("admin:token", token);
         document.getElementById('adminAuth').classList.add('hidden');
         document.getElementById('adminPanel').classList.remove('hidden');
+        renderMessages(messages);
     }
 }
 async function kick_user(){

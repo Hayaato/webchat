@@ -52,14 +52,14 @@ function init(server) {
                         { text: data.text },
                         { headers: { Authorization: `Bearer ${data.token}` } }
                     );
-
                     wss.clients.forEach(client => {
                         if (client.readyState === WebSocket.OPEN) {
                             client.send(JSON.stringify({
                                 type: "message",
                                 user: response.data.user,
                                 text: response.data.text,
-                                color: response.data.color
+                                color: response.data.color,
+                                id: response.data.id
                             }));
                         }
                     });

@@ -25,4 +25,17 @@ async function clearRedisChat(){
         return err
     }
 }
-module.exports = {saveHashPassword, getHashPass, clearRedisChat}
+
+async function deleteMessageById(msgId) {
+    const list = await redisClient.lRange('room:chat', 0, -1);
+
+    for (const item of list) {
+        const msg = JSON.parse(item);
+        if (msg.id === msgId) {
+            await redisClient.lRem('room:chat', 1, item);
+            return true;
+        }
+    }
+    return false;
+}
+module.exports = {saveHashPassword, getHashPass, clearRedisChat, deleteMessageById};

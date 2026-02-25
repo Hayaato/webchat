@@ -60,4 +60,15 @@ async function ban(req, res) {
         res.sendStatus(500);
     }
 }
-module.exports = {setAdminPassword, login, auth, clear, kick, ban};
+
+async function delete_msg(req, res){
+    try {
+        const id = req.body.id;
+        if(await service.delete_msg_service(id)){res.sendStatus(200)}
+        else{res.sendStatus(400);}
+    }
+    catch (error) {
+        res.sendStatus(500);
+    }
+}
+module.exports = {setAdminPassword, login, auth, clear, kick, ban, delete_msg};

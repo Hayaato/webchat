@@ -3,8 +3,8 @@ const socket = new WebSocket("ws://localhost:3000");
 let token = sessionStorage.getItem("token");
 const refresh_token = sessionStorage.getItem("refresh_token");
 const span = document.getElementById("chat-title");
-if (!token && !refresh_token) { window.location.href = "index.html"; }
-getUser(token)
+if (!token && !refresh_token) {window.location.href = "index.html";}
+getUser(token);
 let messages = [];
 
 async function getUser(token){
@@ -46,10 +46,15 @@ socket.addEventListener("message", (event) => {
             break;
         case 'clear':
             messages = [];
-            document.getElementById('messages').innerHTML = '';
+            messagesBox.innerHTML = '';
             break;
         case 'disconnect':
             logout();
+            break;
+        case 'deleteMessage':
+            const msgId = msg.id;
+            messages = messages.filter(m => m.id !== msgId);
+            renderMessages(messages);
             break;
     }
 });
@@ -60,19 +65,43 @@ function renderMessages(msgArray) {
     msgArray.forEach(msg => {
         const div = document.createElement("div");
         div.className = "message";
+        div.id = `${msg.id}`;
         div.innerHTML = `<span class="user-name">${msg.user}:</span> ${msg.text}`;
         div.querySelector(".user-name").style.color = msg.color;
+
+        if (sessionStorage.getItem("admin:token")) {
+            if (!div.querySelector(".delete-btn")) {
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "Удалить";
+                deleteBtn.className = "delete-btn";
+                deleteBtn.onclick = async () => {
+                    const res = await fetch("/admin/delete_msg", {
+                        method: "PUT",
+                        cache: "no-store",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + sessionStorage.getItem("admin:token")
+                        },
+                        body: JSON.stringify({ id: div.id })
+                    });
+                    if (res.status === 200) {
+                        div.remove();
+                    }
+                };
+                div.appendChild(deleteBtn);
+            }
+        }
+
         messagesBox.appendChild(div);
     });
     messagesBox.scrollTop = messagesBox.scrollHeight;
 }
 
-// Отправка сообщения
 function sendMessage() {
     const input = document.getElementById("messageInput");
     const text = input.value.trim();
     if (!text) return;
-    const msg = { token: token,text: text };
+    const msg = { token: token, text: text };
     socket.send(JSON.stringify(msg));
     input.value = "";
 }
@@ -100,4 +129,3 @@ async function refresh(){
         token: token
     }));
 }
-

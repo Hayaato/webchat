@@ -56,5 +56,16 @@ async function ban_user(user, duration){
         throw e;
     }
 }
+async function delete_msg_service(id){
+    try {
+        if(await repo.deleteMessageById(id)){
+            broadcast({ type: "deleteMessage", id: id });
+            return true;
+        }
+    }
+    catch(e){
+        throw e;
+    }
+}
 
-module.exports = {setAdminHash, getAdminHash, clearChat, kick_user, ban_user};
+module.exports = {setAdminHash, getAdminHash, clearChat, kick_user, ban_user, delete_msg_service};
