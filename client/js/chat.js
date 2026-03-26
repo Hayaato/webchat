@@ -1,5 +1,7 @@
 const messagesBox = document.getElementById("messages");
-const socket = new WebSocket("ws://localhost:3000");
+const socket = new WebSocket(
+    (location.protocol === "https:" ? "wss://" : "ws://") + location.host
+);
 let token = sessionStorage.getItem("token");
 const refresh_token = sessionStorage.getItem("refresh_token");
 const span = document.getElementById("chat-title");
