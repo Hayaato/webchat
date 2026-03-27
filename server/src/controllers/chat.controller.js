@@ -1,26 +1,23 @@
 const service = require("../services/chat.service");
 
-async function message(req, res){
+async function message(text, user){
     try{
-        const user = req.user
-        const text = req.body.text;
         const result = await service.message(user, text);
-        res.json({user: result.user, text: result.text, color: result.color, id: result.id});
+        return ({user: result.user, text: result.text, color: result.color, id: result.id});
     }
     catch (e) {
         console.error("CONTROLLER ERROR:", e);
-        res.status(400).json({ error: e.message });
+        return { error: e.message };
     }
 
 }
-async function getData(req, res){
+async function getData(){
     try {
-        const messages = await service.getData();
-        res.json(messages);
+        return  messages = await service.getData();
     }
     catch (e) {
         console.error("CONTROLLER ERROR:", e);
-        res.status(400).json({ error: e.message });
+        return { error: e.message };
     }
 }
 

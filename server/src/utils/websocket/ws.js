@@ -1,9 +1,9 @@
 const WebSocket = require("ws");
-const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const SECRET = process.env.JWT_SECRET;
 let wss;
 const clients = new Map();
+const CONTROLLER = require("../../controllers/chat.controller");
 
 function init(server) {
     if (wss) return wss;
@@ -15,30 +15,25 @@ function init(server) {
 
         ws.on("message", async raw => {
             const msg = JSON.parse(raw.toString());
+            const token = msg.token;
+            if (!token) return ws.close();
+
+            const cleanToken = token.replace('Bearer ', '');
+            const decoded = jwt.verify(cleanToken, SECRET);
+            if(!decoded) {ws.send(JSON.stringify({ error: "Token is not valid" }));return}
+            user = decoded.login;
             if (msg.type === "get_messages") {
                 try {
-                    const token = msg.token;
-                    if (!token) return ws.close();
-
-                    const cleanToken = token.replace('Bearer ', '');
-                    const decoded = jwt.verify(cleanToken, SECRET);
-                    user = decoded.login;
-
                     if(clients.has(user)) {
                         ws.close(4000, 'Already connected');
                         return;
                     }
 
-                    const response = await axios.post(
-                        "http://localhost:3000/chat/getData",
-                        {},
-                        { headers: { Authorization: `Bearer ${cleanToken}` } }
-                    );
-
+                    const response = await CONTROLLER.getData()
                     clients.set(user, ws);
                     ws.send(JSON.stringify({
                         type: "get_messages",
-                        data: response.data
+                        data: response
                     }));
                 } catch (err) {
                     console.error("WS → ROUTE:", err.response?.data || err.message);
@@ -46,20 +41,15 @@ function init(server) {
                 }
             } else {
                 try {
-                    const data = msg;
-                    const response = await axios.post(
-                        "http://localhost:3000/chat/message",
-                        { text: data.text },
-                        { headers: { Authorization: `Bearer ${data.token}` } }
-                    );
+                    const response = await CONTROLLER.message(msg.text, user)
                     wss.clients.forEach(client => {
                         if (client.readyState === WebSocket.OPEN) {
                             client.send(JSON.stringify({
                                 type: "message",
-                                user: response.data.user,
-                                text: response.data.text,
-                                color: response.data.color,
-                                id: response.data.id
+                                user: response.user,
+                                text: response.text,
+                                color: response.color,
+                                id: response.id
                             }));
                         }
                     });

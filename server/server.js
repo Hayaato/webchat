@@ -11,7 +11,6 @@ console.log(uid.generateId())
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../client")));
 
-app.use("/chat", require("./src/routes/chat.routes"))
 app.use("/auth", require("./src/routes/auth.routes"));
 app.use("/admin", require("./src/routes/admin.routes"));
 
