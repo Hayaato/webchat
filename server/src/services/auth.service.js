@@ -7,35 +7,43 @@ const JWT_SECRET = process.env.JWT_SECRET
 const set = require("../utils/blacklist");
 
 async function login(login, password) {
-    const result = await repo.findByLogin(login);
-    if (!result.rows.length) throw new Error();
+    try {
+        const result = await repo.findByLogin(login);
+        if (!result.rows.length) throw new Error("User does not exist");
 
-    const user = result.rows[0];
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok) throw new Error();
-    if(set.Blacklist.has(login)) return false;
-    const userColor = await chatRepo.getColor(user.login)
-    if (!userColor){
-        await chatRepo.saveColor(user.login, color.randomHexColor())
+        const user = result.rows[0];
+        if (set.Blacklist.has(login)) return false;
+        const ok = await bcrypt.compare(password, user.password);
+        if (!ok) throw new Error();
+        const userColor = await chatRepo.getColor(user.login)
+        if (!userColor) {
+            await chatRepo.saveColor(user.login, color.randomHexColor())
+        }
+        return {
+            token: jwt.sign(
+                {login: user.login},
+                JWT_SECRET,
+                {expiresIn: "1d"}
+            ),
+            refresh_token: jwt.sign(
+                {
+                    refresh: user.login,
+                    type: "refresh"
+                },
+                JWT_SECRET,
+                {expiresIn: "7d"}
+            )
+        };
     }
-    return {token: jwt.sign(
-        { login: user.login},
-        JWT_SECRET,
-        { expiresIn: "1d" }
-    ),
-        refresh_token:jwt.sign(
-            {refresh: user.login,
-            type: "refresh"},
-            JWT_SECRET,
-            { expiresIn: "7d" }
-        )
-    };
+    catch(err) {
+        throw err;
+    }
 }
 async function register(login, password) {
     const result = await repo.findByLogin(login);
     if(result.rows.length > 0) throw new Error("User already exists");
 
-    const hash = await bcrypt.hash(password, 12);
+    const hash = await bcrypt.hash(password, 10);
 
     await repo.createUser(login, hash);
     return true;
