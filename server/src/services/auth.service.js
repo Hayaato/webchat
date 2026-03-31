@@ -23,7 +23,7 @@ async function login(login, password) {
             token: jwt.sign(
                 {login: user.login},
                 JWT_SECRET,
-                {expiresIn: "1d"}
+                {expiresIn: "15m"}
             ),
             refresh_token: jwt.sign(
                 {
@@ -43,7 +43,7 @@ async function register(login, password) {
     const result = await repo.findByLogin(login);
     if(result.rows.length > 0) throw new Error("User already exists");
 
-    const hash = await bcrypt.hash(password, 10);
+    const hash = await bcrypt.hash(password, 8);
 
     await repo.createUser(login, hash);
     return true;
@@ -57,7 +57,7 @@ async function refresh_service(refreshToken) {
     return jwt.sign(
         {login: decoded.refresh},
         JWT_SECRET,
-        {expiresIn: "1d"}
+        {expiresIn: "15m"}
     )
 }
 

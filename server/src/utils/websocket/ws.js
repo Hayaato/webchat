@@ -15,28 +15,22 @@ function init(server) {
 
         ws.on("message", async raw => {
             let msg;
-
             try {
                 msg = JSON.parse(raw.toString());
             } catch (e) {
                 ws.close();
                 return;
             }
-
             const token = msg.token;
             if (!token) return ws.close();
-
             const cleanToken = token.replace('Bearer ', '');
-
             let decoded;
-
             try {
                 decoded = jwt.verify(cleanToken, SECRET);
             } catch (e) {
                 ws.send(JSON.stringify({ error: "Token is not valid" }));
                 return ws.close();
             }
-
             user = decoded.login;
             if (msg.type === "get_messages") {
                 try {

@@ -1,5 +1,5 @@
 const redisClient = require("../database/redis");
-
+const MAX_MSG = require("../../server");
 async function saveColor(user, color){
     try{
         await redisClient.hSet(`room:color`, user, color);
@@ -20,12 +20,17 @@ async function getColor(user){
 
 async function addMessage(user, text, color, id) {
     try {
-        const message = {user: user, text: text, color: color, id: id};
+        const MAX_MSG = 100
 
-        await redisClient.rPush("room:chat", JSON.stringify(message));
+        const message = {user: user, text: text, color: color, id: id};
+        await redisClient.multi()
+            .rPush("room:chat", JSON.stringify(message))
+            .lTrim("room:chat", -MAX_MSG, -1)
+            .exec();
         return true;
     }
-    catch{
+    catch (err) {
+        console.error("REDIS ERROR:", err);
         return false;
     }
 }

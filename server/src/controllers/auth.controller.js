@@ -7,7 +7,7 @@ async function login(req, res) {
         res.status(200).json({ token: token.token ,refresh_token: token.refresh_token });
     } catch(err) {
         console.log(err);
-        res.sendStatus(400);
+        res.sendStatus(500);
     }
 }
 
@@ -21,7 +21,7 @@ async function register(req, res) {
             res.sendStatus(400);
         }
     } catch (e) {
-        res.sendStatus(400);
+        res.sendStatus(500);
     }
 }
 
@@ -40,7 +40,7 @@ async function refresh(req, res) {
         res.status(200).json({ token: newToken });
     }
     catch(err) {
-        res.sendStatus(401);
+        res.sendStatus(500);
     }
 }
 
