@@ -43,7 +43,7 @@ async function register(login, password) {
     const result = await repo.findByLogin(login);
     if(result.rows.length > 0) throw new Error("User already exists");
 
-    const hash = await bcrypt.hash(password, 8);
+    const hash = await bcrypt.hash(password);
 
     await repo.createUser(login, hash);
     return true;
