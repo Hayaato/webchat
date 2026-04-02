@@ -14,7 +14,7 @@ async function login(login, password) {
         const user = result.rows[0];
         if (set.Blacklist.has(login)) return false;
         const ok = await bcrypt.compare(password, user.password);
-        if (!ok) throw new Error();
+        if (!ok) return 401;
         const userColor = await chatRepo.getColor(user.login)
         if (!userColor) {
             await chatRepo.saveColor(user.login, color.randomHexColor())
