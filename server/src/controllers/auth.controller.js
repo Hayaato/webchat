@@ -4,6 +4,7 @@ async function login(req, res) {
     try {
         const token = await service.login(req.body.login, req.body.password);
         if (!token){res.sendStatus(401)}
+        if(token === 404 || token === 401){res.sendStatus(token);return}
         res.status(200).json({ token: token.token ,refresh_token: token.refresh_token });
     } catch(err) {
         console.log(err);
