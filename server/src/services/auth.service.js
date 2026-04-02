@@ -9,7 +9,7 @@ const set = require("../utils/blacklist");
 async function login(login, password) {
     try {
         const result = await repo.findByLogin(login);
-        if (!result.rows.length) throw new Error("User does not exist");
+        if (!result.rows.length) return 404;
 
         const user = result.rows[0];
         if (set.Blacklist.has(login)) return false;
