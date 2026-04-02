@@ -1,6 +1,6 @@
 const repo = require('../repositories/auth.repo');
 const chatRepo = require("../repositories/chat.repo");
-const bcrypt = require("bcrypt")
+const bcrypt = require('../utils/bcrypt/bcrypt');
 const jwt = require("jsonwebtoken");
 const color = require('../utils/color');
 const JWT_SECRET = process.env.JWT_SECRET
