@@ -8,5 +8,5 @@ DB_HOST = process.env.DB_HOST;
 DB_PORT = process.env.DB_PORT;
 DB_USER = process.env.DB_USER;
 DB_DATABASE = process.env.DB_DATABASE;
-
+process.env.UV_THREADPOOL_SIZE = 12;
 module.exports = {JWT_SECRET, DB_HOST, DB_USER, DB_DATABASE, DB_PASSWORD, DB_PORT};
