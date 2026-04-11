@@ -1,6 +1,6 @@
 const repo = require('../repositories/auth.repo');
 const chatRepo = require("../repositories/chat.repo");
-const bcrypt = require('../utils/bcrypt/bcrypt');
+const argon = require('../utils/argon/argon2id');
 const jwt = require("jsonwebtoken");
 const color = require('../utils/color');
 const JWT_SECRET = process.env.JWT_SECRET
@@ -13,7 +13,7 @@ async function login(login, password) {
 
         const user = result.rows[0];
         if (set.Blacklist.has(login)) return false;
-        const ok = await bcrypt.compare(password, user.password);
+        const ok = await argon.compare(password, user.password);
         if (!ok) return 401;
         const userColor = await chatRepo.getColor(user.login)
         if (!userColor) {
@@ -43,7 +43,7 @@ async function register(login, password) {
     const result = await repo.findByLogin(login);
     if(result.rows.length > 0) throw new Error("User already exists");
 
-    const hash = await bcrypt.hash(password);
+    const hash = await argon.hash(password);
 
     await repo.createUser(login, hash);
     return true;
