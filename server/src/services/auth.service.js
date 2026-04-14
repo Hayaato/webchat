@@ -1,52 +1,35 @@
-const repo = require('../repositories/auth.repo');
 const chatRepo = require("../repositories/chat.repo");
-const argon = require('../utils/argon/argon2id');
 const jwt = require("jsonwebtoken");
 const color = require('../utils/color');
 const JWT_SECRET = process.env.JWT_SECRET
 const set = require("../utils/blacklist");
+const auth = require("../utils/grpc/authClient")
 
 async function login(login, password) {
     try {
-        const result = await repo.findByLogin(login);
-        if (!result.rows.length) return 404;
-
-        const user = result.rows[0];
         if (set.Blacklist.has(login)) return false;
-        const ok = await argon.compare(password, user.password);
-        if (!ok) return 401;
-        const userColor = await chatRepo.getColor(user.login)
+        const result = await auth.login(login, password);
+
+        const userColor = await chatRepo.getColor(login)
         if (!userColor) {
-            await chatRepo.saveColor(user.login, color.randomHexColor())
+            await chatRepo.saveColor(login, color.randomHexColor())
         }
-        return {
-            token: jwt.sign(
-                {login: user.login},
-                JWT_SECRET,
-                {expiresIn: "15m"}
-            ),
-            refresh_token: jwt.sign(
-                {
-                    refresh: user.login,
-                    type: "refresh"
-                },
-                JWT_SECRET,
-                {expiresIn: "7d"}
-            )
-        };
+        return result;
     }
     catch(err) {
-        throw err;
+        if (err.code === 16) {}
+        throw new Error("500: Сдох бэкенд на Go");
     }
 }
 async function register(login, password) {
-    const result = await repo.findByLogin(login);
-    if(result.rows.length > 0) throw new Error("User already exists");
-
-    const hash = await argon.hash(password);
-
-    await repo.createUser(login, hash);
-    return true;
+    try
+    {
+        const result = await auth.register(login, password);
+        return result.status === 200;
+    }
+    catch (err){
+        throw err;
+    }
 }
 async function refresh_service(refreshToken) {
     const decoded = jwt.verify(refreshToken, JWT_SECRET);

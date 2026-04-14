@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+// Имя пакета для gRPC (будет использоваться в Node.js)
+package auth;
+
+// ВАЖНО: "go-auth" в начале пути должно строго совпадать
+// с именем модуля в твоем файле go-auth/go.mod
+option go_package = "go-auth/internal/grpc/api";
+
+// Описание нашего сервиса авторизации
+service AuthService {
+  // Метод для входа
+  rpc Login (AuthRequest) returns (LoginResponse);
+
+  // Метод для регистрации
+  rpc Register (AuthRequest) returns (RegisterResponse);
+}
+
+// Общий формат данных, который Node.js отправляет в Go
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+// То, что Go возвращает при успешном логине
+message LoginResponse {
+  string token = 1;
+  string refresh_token = 2;
+}
+
+// То, что Go возвращает при регистрации
+// (Специально отдаем HTTP-статус, чтобы Node.js просто перекинул его на фронт)
+message RegisterResponse {
+  int32 status = 1;      // Например: 200 (ОК), 400 (Уже есть), 500 (Ошибка БД)
+  string message = 2;    // Поясняющий текст
+}
